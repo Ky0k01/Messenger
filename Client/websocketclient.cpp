@@ -15,6 +15,7 @@ void WebSocketClient::sendLoginRequest(const QString &login, const QString &pass
     obj["login"] = login;
     obj["password"] = password;
     m_webSocket.sendTextMessage(QJsonDocument(obj).toJson(QJsonDocument::Compact));
+    qDebug() << "Login request sent:" << QJsonDocument(obj).toJson(QJsonDocument::Compact);
 }
 
 void WebSocketClient::sendRegisterRequest(const QString &login, const QString &password){
@@ -23,9 +24,11 @@ void WebSocketClient::sendRegisterRequest(const QString &login, const QString &p
     obj["login"] = login;
     obj["password"] = password;
     m_webSocket.sendTextMessage(QJsonDocument(obj).toJson(QJsonDocument::Compact));
+    qDebug() << "Register request sent:" << QJsonDocument(obj).toJson(QJsonDocument::Compact);
 }
 
 void WebSocketClient::onConnected(){
+    qDebug() << "WebSocket connected to" << m_url.toString();
     // Можно отправить приветствие или запрос состояния
 }
 
@@ -37,9 +40,13 @@ void WebSocketClient::onTextMessageReceived(const QString &message)
     if (obj["action"] == "login") {
         bool ok = obj["success"].toBool();
         emit loginResult(ok, obj["error"].toString());
+        qDebug() << "Login result received:" << (ok ? "Success" : "Failure") << obj["error"].toString();
     }
     else if (obj["action"] == "register") {
         bool ok = obj["success"].toBool();
         emit registrationResult(ok, obj["error"].toString());
+        qDebug() << "Registration result received:" << (ok ? "Success" : "Failure") << obj["error"].toString();
     }
 }
+
+

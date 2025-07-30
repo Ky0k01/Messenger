@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.15)
 project(Client LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -8,24 +8,19 @@ find_package(Qt5 REQUIRED COMPONENTS Core Widgets WebSockets UiTools)
 
 set(SOURCES
     main.cpp
-    authorisationwindow.cpp
     websocketclient.cpp
-    mainwindow.cpp
+    authwindow.cpp
 )
 
 set(HEADERS
-    authorisationwindow.h
     websocketclient.h
-    mainwindow.h
+    authwindow.h
 )
 
-# List your .ui files here
 set(UIS
-    authorisationwindow.ui
-    mainwindow.ui
+    authwindow.ui
 )
 
-# This will generate moc and ui headers automatically
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
