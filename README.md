@@ -28,24 +28,35 @@
 
 ## Архитектура
 
+## Архитектура
+
 ```mermaid
 flowchart TD
-    subgraph Клиент
-        AW[AuthWindow (GUI)]
-        WC[WebSocketClient]
+    subgraph Client
+        AuthWindow["AuthWindow"]
+        WebSocketClient["WebSocketClient"]
     end
 
-    subgraph Сервер
-        MS[MessengerServer]
-        PG[(PostgreSQL)]
+    subgraph Server
+        MessengerServer["MessengerServer"]
+        PostgreSQL["PostgreSQL"]
     end
 
-    AW -- Qt сигнал --> WC
-    WC -- WebSocket JSON --> MS
-    MS -- SQL запрос --> PG
-    PG -- результат --> MS
-    MS -- WebSocket JSON --> WC
+    AuthWindow --> WebSocketClient
+    WebSocketClient -->|WebSocket JSON| MessengerServer
+    MessengerServer -->|SQL| PostgreSQL
+    PostgreSQL --> MessengerServer
+    MessengerServer -->|WebSocket JSON| WebSocketClient
 ```
+
+### Описание архитектуры
+
+- **Client**  
+  Включает окно авторизации (AuthWindow) и компонент для работы с WebSocket (WebSocketClient).  
+  WebSocketClient отправляет JSON-команды серверу и получает ответы.
+- **Server**  
+  MessengerServer принимает соединения по WebSocket, выполняет обработку команд, взаимодействует с базой данных PostgreSQL для проверки, регистрации пользователей и хранения сообщений.
+- Данные между клиентом и сервером передаются в формате JSON.
 
 ---
 
