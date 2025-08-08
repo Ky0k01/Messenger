@@ -13,14 +13,16 @@
 
 #include <QTimer>
 
-class MessengerServer : public QObject{
+class Server : public QObject{
     Q_OBJECT
 
 public:
-    MessengerServer(quint16 port, QObject *parent = nullptr);
+    Server(quint16 port, QObject *parent = nullptr);
 
 public slots:
     void onNewConnection();
+    void textMessageReceived(const QString& message);
+    void binaryMessageReceived(const QByteArray& message);
 
 private:
     QWebSocketServer *server;
