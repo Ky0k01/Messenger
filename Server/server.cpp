@@ -26,6 +26,7 @@ Server::Server(quint16 port, QObject *parent): QObject(parent){
         qCritical() << "Failed to create table:" << q.lastError().text();
         exit(1);
     }
+    qDebug()<<"Server URL: "<<server->serverName()<<server->serverUrl()<<server->serverAddress()<<server->serverPort();
 }
 
 void Server::onNewConnection() {

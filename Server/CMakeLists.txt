@@ -1,5 +1,9 @@
-cmake_minimum_required(VERSION 3.16)
-project(Server)
+cmake_minimum_required(VERSION 3.15)
+project(Server LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -13,6 +17,9 @@ set(POSTGRESQL_DIR "C:/Program Files/PostgreSQL/17")
 
 # Ищем Qt
 find_package(Qt5 COMPONENTS Core Network Sql WebSockets REQUIRED)
+
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 add_executable(Server main.cpp server.cpp server.h) # Добавь сюда свои исходники
 
@@ -32,6 +39,16 @@ add_custom_command(TARGET Server POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${QT_DIR}/bin/Qt5WebSockets.dll"
         "$<TARGET_FILE_DIR:Server>/Qt5WebSockets.dll"
+
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${QT_DIR}/bin/libwinpthread-1.dll"
+        "$<TARGET_FILE_DIR:Server>/libwinpthread-1.dll"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${QT_DIR}/bin/libstdc++-6.dll"
+        "$<TARGET_FILE_DIR:Server>/libstdc++-6.dll"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${QT_DIR}/bin/libgcc_s_seh-1.dll"
+        "$<TARGET_FILE_DIR:Server>/libgcc_s_seh-1.dll"
 )
 
 ## Копирование PostgreSQL DLL

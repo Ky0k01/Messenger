@@ -8,11 +8,14 @@ find_package(Qt5 REQUIRED COMPONENTS Core Widgets WebSockets UiTools)
 
 set(SOURCES
     main.cpp
+    mediator.cpp
     websocketclient.cpp
     authwindow.cpp
 )
 
 set(HEADERS
+    imediator.h
+    mediator.h
     websocketclient.h
     authwindow.h
 )
