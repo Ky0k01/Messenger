@@ -11,6 +11,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include <QCryptographicHash>
+#include <QSslCertificate>
+
 #include <QTimer>
 
 class Server : public QObject{
@@ -29,6 +32,7 @@ private:
     QSqlDatabase db;
 
     QTimer timer;
+    QCryptographicHash* hash = new QCryptographicHash(QCryptographicHash::RealSha3_512);
 };
 
 #endif // SERVER_H

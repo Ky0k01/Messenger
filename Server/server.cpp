@@ -21,8 +21,10 @@ Server::Server(quint16 port, QObject *parent): QObject(parent){
         exit(1);
     }
 
+    qDebug()<<"db opened";
+
     QSqlQuery q;
-    if(!q.exec("CREATE TABLE IF NOT EXISTS users (id BIGSERIAL PRIMARY KEY, login VARCHAR(64) NOT NULL, password VARCHAR(64) NOT NULL)")){
+    if(!q.exec("CREATE TABLE IF NOT EXISTS users (id BIGSERIAL PRIMARY KEY, login VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL)")){
         qCritical() << "Failed to create table:" << q.lastError().text();
         exit(1);
     }
@@ -47,9 +49,21 @@ void Server::textMessageReceived(const QString& message){
 
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
     QJsonObject obj = doc.object();
+
     QString cmd=obj["package"].toString();
     QString login = obj["login"].toString();
     QString password = obj["password"].toString();
+
+    qDebug()<<password;
+
+    QString salt = "some_Sirius_Shit_Salt_Wrote_By_Max_Kyoko_Yudenich";
+
+    hash->addData(password.toUtf8());
+    hash->addData(salt.toUtf8());
+    QByteArray result=hash->result();
+    hash->reset();
+
+    password=result.toHex();
 
     qDebug()<<"received package:\n"<<
               "package - "<<cmd<<"\n"
@@ -66,18 +80,22 @@ void Server::textMessageReceived(const QString& message){
         q.bindValue(":login", login);
         q.bindValue(":password", password);
 
-        if(q.exec()){
-            reply["status"] = "ok";
+        if(q.exec()){ // добавить проверку на повторы
+            reply["package"] = "Registration";
+            reply["success"] = "ok";
             reply["message"] = "User registered successfully";
+
             qDebug()<<"status ok";
         }
         else{
-            reply["status"] = "error";
-            reply["error"] = "User exists or database error";
+            reply["package"] = "Registration";
+            reply["success"] = "error";
+            reply["message"] = "User exists or database error";
+
             qDebug()<<"status error"<<q.lastError().text();
         }
     }
-    else if (cmd == "login"){
+    else if (cmd == "Login"){
         qDebug()<<"trying to login user";
 
         QSqlQuery q;
@@ -90,13 +108,16 @@ void Server::textMessageReceived(const QString& message){
 
         if(q.exec()){
             if (q.next()){
-                reply["status"] = "ok";
+                reply["package"] = "Login";
+                reply["success"] = "ok";
                 reply["message"] = "User logined successfully";
                 qDebug() << "Login successful for user:" << login;
             }
             else{
-                reply["status"] = "error";
+                reply["package"] = "Login";
+                reply["success"] = "error";
                 reply["error"] = "Invalid login or password";
+
                 qDebug()<<"Invalid login or password";
             }
         }
@@ -105,6 +126,10 @@ void Server::textMessageReceived(const QString& message){
         }
     }
     socket->sendTextMessage(QJsonDocument(reply).toJson(QJsonDocument::Compact));
+    cmd.clear();
+    login.clear();
+    password.clear();
+    result.clear();
 }
 
 void Server::binaryMessageReceived(const QByteArray& message){
