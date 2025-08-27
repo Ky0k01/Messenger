@@ -1,8 +1,12 @@
-// #include "mainwindow.h"
+/*!
+ * \brief Client - клиентская часть учебного проекта Messenger на Qt5 C++17.
+ * \author Юденич Максим
+ * \version 0.9
+ * \date Август 2025
+ * \copyright MIT License
+ */
 
 #include <QApplication>
-// #include <QLocale>
-// #include <QTranslator>
 
 #include "mediator.h"
 
