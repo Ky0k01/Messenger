@@ -13,5 +13,8 @@ set(QT_DIR "C:/Qt/5.15.2/mingw81_64")
 set(POSTGRESQL_DIR "C:/Program Files/PostgreSQL/17")
 include_directories("${POSTGRESQL_DIR}/include")
 
+file(GLOB TEXT_FILES "readme.txt")
+add_custom_target(TextFiles ALL SOURCES ${TEXT_FILES})
+
 add_subdirectory(src)
-add_subdirectory(tests)
+#add_subdirectory(tests)

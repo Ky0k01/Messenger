@@ -1,12 +1,16 @@
 #include <QCoreApplication>
-#include <QDir>
 
-#include "server.h"
+#include "Logger/logger.h"
+#include "mediator.h"
 
 int main(int argc, char *argv[]){
     QCoreApplication a(argc, argv);
 
-    Server server(12345);
+    std::system("chcp 65001");
+
+    Logger logger;
+    Mediator mediator(&logger);
+    mediator.runStateMachine();
 
     return a.exec();
 }

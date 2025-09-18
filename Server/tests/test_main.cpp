@@ -1,5 +1,5 @@
 #include <QtTest>
-#include "../src/server.h"
+#include "../src/WebSocketManager/server.h"
 
 class ServerTest : public QObject {
     Q_OBJECT
